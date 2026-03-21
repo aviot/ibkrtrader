@@ -90,6 +90,30 @@ ibkr-shell
 - `IBKR_DRY_RUN`
 - `IBKR_REFRESH_HZ`
 
+## Windows 双击启动打包
+
+如果你要做成“下载后双击打开”的 Windows GUI，可以直接用仓库里自带的打包配置：
+
+### 安装打包依赖
+
+```bash
+pip install -e ".[build,gui,ibkr]"
+```
+
+### 构建 exe
+
+```bash
+python scripts/build_windows.py
+```
+
+构建完成后，可执行文件会在：
+
+```text
+dist/ibkr-shell/ibkr-shell.exe
+```
+
+这个产物就是面向 Windows 的双击启动版本。源码仓库里还附带了 `launch_gui.pyw`，如果用户机器已经装好了 Python 和依赖，也可以直接双击这个 `pyw` 文件启动 GUI。
+
 ## 当前行为说明
 
 ### dry-run
