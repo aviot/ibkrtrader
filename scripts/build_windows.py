@@ -49,7 +49,9 @@ def main() -> int:
         str(SPEC),
     ]
     print("Running:", " ".join(command))
-    subprocess.run(command, cwd=ROOT, check=True)
+    env = dict(__import__("os").environ)
+    env["IBKR_SHELL_ROOT"] = str(ROOT)
+    subprocess.run(command, cwd=ROOT, check=True, env=env)
 
     built_app = DIST / "ibkr-shell"
     shutil.copytree(built_app, release_dir)

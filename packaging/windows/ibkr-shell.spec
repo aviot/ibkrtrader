@@ -1,10 +1,10 @@
 # PyInstaller spec for a double-clickable Windows GUI build.
 
+import os
 from pathlib import Path
 
-SPEC_PATH = Path(__file__).resolve()
-WINDOWS_PACKAGING = SPEC_PATH.parent
-ROOT = WINDOWS_PACKAGING.parent.parent
+ROOT = Path(os.environ['IBKR_SHELL_ROOT']).resolve()
+WINDOWS_PACKAGING = ROOT / 'packaging' / 'windows'
 ICON = WINDOWS_PACKAGING / 'ibkr-shell.ico'
 VERSION_INFO = WINDOWS_PACKAGING / 'version_info.txt'
 
