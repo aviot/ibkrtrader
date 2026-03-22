@@ -7,6 +7,8 @@ def test_windows_spec_targets_pyw_launcher() -> None:
     assert "launch_gui.pyw" in spec
     assert "console=False" in spec
     assert "name='ibkr-shell'" in spec
+    assert "SPEC_PATH = Path(__file__).resolve()" in spec
+    assert "ROOT = WINDOWS_PACKAGING.parent.parent" in spec
 
 
 def test_windows_build_script_mentions_pyinstaller() -> None:

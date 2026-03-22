@@ -2,8 +2,9 @@
 
 from pathlib import Path
 
-ROOT = Path.cwd()
-WINDOWS_PACKAGING = ROOT / 'packaging' / 'windows'
+SPEC_PATH = Path(__file__).resolve()
+WINDOWS_PACKAGING = SPEC_PATH.parent
+ROOT = WINDOWS_PACKAGING.parent.parent
 ICON = WINDOWS_PACKAGING / 'ibkr-shell.ico'
 VERSION_INFO = WINDOWS_PACKAGING / 'version_info.txt'
 
@@ -11,7 +12,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['launch_gui.pyw'],
+    [str(ROOT / 'launch_gui.pyw')],
     pathex=[str(ROOT)],
     binaries=[],
     datas=[],
