@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "交易纪律检查助手",
+  "description": "记录今日重要新闻并在下单前执行强制检查。",
+  "version": "1.0.0",
+  "action": {
+    "default_title": "打开交易纪律面板"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage"]
+}
