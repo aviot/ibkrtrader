@@ -8,16 +8,13 @@ const defaultState = {
     isLeader: false,
     notFallingKnife: false,
     notOverextended: false,
-    uncertain: false,
   },
 };
 
 const newsForm = document.getElementById('news-form');
 const newsText = document.getElementById('news-text');
-const newsRank = document.getElementById('news-rank');
 const newsList = document.getElementById('news-list');
 const checklistForm = document.getElementById('checklist-form');
-const uncertainCheckbox = document.getElementById('uncertain');
 const decision = document.getElementById('decision');
 const newsItemTemplate = document.getElementById('news-item-template');
 
@@ -40,6 +37,7 @@ async function init() {
     };
   }
 
+  normalizeNewsOrder();
   hydrateChecklist();
   renderNews();
   updateDecision();
@@ -49,18 +47,14 @@ newsForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const text = newsText.value.trim();
-  const rank = Number.parseInt(newsRank.value, 10);
-
-  if (!text || Number.isNaN(rank) || rank < 1) {
+  if (!text) {
     return;
   }
 
-  state.news.push({ id: crypto.randomUUID(), text, rank });
-  state.news.sort((a, b) => a.rank - b.rank);
+  state.news.push({ id: crypto.randomUUID(), text, rank: state.news.length + 1 });
+  normalizeNewsOrder();
 
   newsText.value = '';
-  newsRank.value = String(Math.max(1, state.news.length));
-
   await persist();
   renderNews();
 });
@@ -72,7 +66,40 @@ newsList.addEventListener('click', async (event) => {
   }
 
   const id = target.dataset.id;
-  state.news = state.news.filter((item) => item.id !== id);
+  if (!id) {
+    return;
+  }
+
+  if (target.classList.contains('delete-btn')) {
+    state.news = state.news.filter((item) => item.id !== id);
+  }
+
+  if (target.classList.contains('move-btn')) {
+    const direction = target.dataset.direction;
+    moveNews(id, direction === 'up' ? -1 : 1);
+  }
+
+  normalizeNewsOrder();
+  await persist();
+  renderNews();
+});
+
+newsList.addEventListener('change', async (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLInputElement) || !target.classList.contains('rank-input')) {
+    return;
+  }
+
+  const id = target.dataset.id;
+  const nextRank = Number.parseInt(target.value, 10);
+
+  if (!id || Number.isNaN(nextRank)) {
+    renderNews();
+    return;
+  }
+
+  reinsertByRank(id, nextRank);
+  normalizeNewsOrder();
   await persist();
   renderNews();
 });
@@ -84,7 +111,6 @@ checklistForm.addEventListener('change', async () => {
     isLeader: checklistForm.elements.isLeader.checked,
     notFallingKnife: checklistForm.elements.notFallingKnife.checked,
     notOverextended: checklistForm.elements.notOverextended.checked,
-    uncertain: uncertainCheckbox.checked,
   };
 
   await persist();
@@ -97,7 +123,6 @@ function hydrateChecklist() {
   checklistForm.elements.isLeader.checked = state.checks.isLeader;
   checklistForm.elements.notFallingKnife.checked = state.checks.notFallingKnife;
   checklistForm.elements.notOverextended.checked = state.checks.notOverextended;
-  uncertainCheckbox.checked = state.checks.uncertain;
 }
 
 function renderNews() {
@@ -105,24 +130,56 @@ function renderNews() {
 
   for (const item of state.news) {
     const node = newsItemTemplate.content.firstElementChild.cloneNode(true);
-    node.querySelector('.news-rank').textContent = `#${item.rank}`;
+    const rankInput = node.querySelector('.rank-input');
+    rankInput.value = item.rank;
+    rankInput.dataset.id = item.id;
+
     node.querySelector('.news-text').textContent = item.text;
 
-    const deleteButton = node.querySelector('.delete-btn');
-    deleteButton.dataset.id = item.id;
+    const buttons = node.querySelectorAll('button');
+    for (const button of buttons) {
+      button.dataset.id = item.id;
+    }
 
     newsList.appendChild(node);
   }
 }
 
-function updateDecision() {
-  const { uncertain, ...mustPassChecks } = state.checks;
-  const allPass = Object.values(mustPassChecks).every(Boolean);
-
-  if (uncertain) {
-    setDecision('❌ 有“不确定”，直接不下单。', 'blocked');
+function moveNews(id, offset) {
+  const currentIndex = state.news.findIndex((item) => item.id === id);
+  if (currentIndex < 0) {
     return;
   }
+
+  const targetIndex = Math.min(state.news.length - 1, Math.max(0, currentIndex + offset));
+  if (targetIndex === currentIndex) {
+    return;
+  }
+
+  const [item] = state.news.splice(currentIndex, 1);
+  state.news.splice(targetIndex, 0, item);
+}
+
+function reinsertByRank(id, nextRank) {
+  const currentIndex = state.news.findIndex((item) => item.id === id);
+  if (currentIndex < 0) {
+    return;
+  }
+
+  const [item] = state.news.splice(currentIndex, 1);
+  const targetIndex = Math.min(state.news.length, Math.max(0, nextRank - 1));
+  state.news.splice(targetIndex, 0, item);
+}
+
+function normalizeNewsOrder() {
+  state.news = state.news.map((item, index) => ({
+    ...item,
+    rank: index + 1,
+  }));
+}
+
+function updateDecision() {
+  const allPass = Object.values(state.checks).every(Boolean);
 
   if (!allPass) {
     setDecision('⛔ 违反规则：今天立即停止交易。', 'blocked');

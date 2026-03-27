@@ -10,19 +10,18 @@
     <main class="layout">
       <section class="card">
         <h1>今日重要新闻</h1>
-        <p class="hint">输入一条新闻后可设置优先级（数值越小越靠前）。</p>
+        <p class="hint">先在上方调整新闻顺序（可改序号、上移、下移），再决定关注重点。</p>
+
+        <h2 class="sub-title">新闻排序（上方优先）</h2>
+        <ul id="news-list" class="news-list"></ul>
+
         <form id="news-form" class="news-form">
           <label>
-            新闻内容
+            新增新闻
             <textarea id="news-text" rows="3" placeholder="例如：FOMC 会议纪要偏鹰派"></textarea>
-          </label>
-          <label>
-            排序优先级
-            <input id="news-rank" type="number" min="1" step="1" value="1" />
           </label>
           <button type="submit">添加新闻</button>
         </form>
-        <ul id="news-list" class="news-list"></ul>
       </section>
 
       <section class="card">
@@ -33,23 +32,22 @@
           <label><input type="checkbox" name="isLeader" /> 是龙头吗？</label>
           <label><input type="checkbox" name="notFallingKnife" /> 不是飞刀吗？</label>
           <label><input type="checkbox" name="notOverextended" /> 没涨太多吗？</label>
-
-          <label class="uncertain-row">
-            <input type="checkbox" id="uncertain" /> 有“不确定”
-          </label>
         </form>
 
         <div id="decision" class="decision pending">等待检查结果…</div>
-        <p class="rule-note">👉 有一个“不确定”：<strong>❌ 直接不下单</strong></p>
         <p class="rule-note">👉 违反规则：<strong>今天立即停止交易</strong></p>
       </section>
     </main>
 
     <template id="news-item-template">
       <li class="news-item">
-        <span class="news-rank"></span>
+        <input class="rank-input" type="number" min="1" step="1" aria-label="新闻序号" />
         <span class="news-text"></span>
-        <button class="delete-btn" type="button" aria-label="删除新闻">删除</button>
+        <div class="news-actions">
+          <button class="move-btn" data-direction="up" type="button" aria-label="上移">↑</button>
+          <button class="move-btn" data-direction="down" type="button" aria-label="下移">↓</button>
+          <button class="delete-btn" type="button" aria-label="删除新闻">删除</button>
+        </div>
       </li>
     </template>
 
