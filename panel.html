@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>交易纪律面板</title>
+    <link rel="stylesheet" href="panel.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <section class="card">
+        <h1>今日重要新闻</h1>
+        <p class="hint">先在上方调整新闻顺序（可改序号、上移、下移），再决定关注重点。</p>
+
+        <h2 class="sub-title">新闻排序（上方优先）</h2>
+        <ul id="news-list" class="news-list"></ul>
+
+        <form id="news-form" class="news-form">
+          <label>
+            新增新闻
+            <textarea id="news-text" rows="3" placeholder="例如：FOMC 会议纪要偏鹰派"></textarea>
+          </label>
+          <button type="submit">添加新闻</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>下单前 Checklist（必须全部满足）</h2>
+        <form id="checklist-form" class="checklist">
+          <label><input type="checkbox" name="hasNews" /> 有消息吗？</label>
+          <label><input type="checkbox" name="aboveMA5" /> 在 5 日线上吗？</label>
+          <label><input type="checkbox" name="isLeader" /> 是龙头吗？</label>
+          <label><input type="checkbox" name="notFallingKnife" /> 不是飞刀吗？</label>
+          <label><input type="checkbox" name="notOverextended" /> 没涨太多吗？</label>
+        </form>
+
+        <div id="decision" class="decision pending">等待检查结果…</div>
+        <p class="rule-note">👉 违反规则：<strong>今天立即停止交易</strong></p>
+      </section>
+    </main>
+
+    <template id="news-item-template">
+      <li class="news-item">
+        <input class="rank-input" type="number" min="1" step="1" aria-label="新闻序号" />
+        <span class="news-text"></span>
+        <div class="news-actions">
+          <button class="move-btn" data-direction="up" type="button" aria-label="上移">↑</button>
+          <button class="move-btn" data-direction="down" type="button" aria-label="下移">↓</button>
+          <button class="delete-btn" type="button" aria-label="删除新闻">删除</button>
+        </div>
+      </li>
+    </template>
+
+    <script src="panel.js"></script>
+  </body>
+</html>

@@ -1,0 +1,160 @@
+:root {
+  color-scheme: light;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f5f7fb;
+  color: #1d2433;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 24px rgba(20, 35, 80, 0.08);
+  padding: 16px;
+}
+
+h1,
+h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.sub-title {
+  font-size: 16px;
+  margin-top: 14px;
+}
+
+.hint {
+  margin-top: 0;
+  color: #586176;
+}
+
+.news-form,
+.checklist {
+  display: grid;
+  gap: 10px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+textarea,
+input[type='number'] {
+  width: 100%;
+  font: inherit;
+  border: 1px solid #c8d0e0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+}
+
+button {
+  border: none;
+  border-radius: 8px;
+  background: #365dff;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  padding: 9px 12px;
+  cursor: pointer;
+}
+
+.news-list {
+  list-style: none;
+  margin: 10px 0 14px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.news-item {
+  display: grid;
+  grid-template-columns: 74px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  background: #f4f6ff;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.rank-input {
+  text-align: center;
+  font-weight: 700;
+}
+
+.news-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.move-btn {
+  background: #5976e9;
+  padding: 6px 9px;
+  min-width: 34px;
+}
+
+.delete-btn {
+  background: #d33f49;
+  padding: 6px 9px;
+}
+
+.checklist label {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.decision {
+  margin-top: 14px;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: 700;
+}
+
+.decision.pending {
+  background: #eef2fc;
+  color: #415173;
+}
+
+.decision.blocked {
+  background: #ffe9eb;
+  color: #8f111f;
+}
+
+.decision.ready {
+  background: #e6f8ec;
+  color: #116b2f;
+}
+
+.rule-note {
+  margin: 10px 0 0;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .news-item {
+    grid-template-columns: 64px 1fr;
+  }
+
+  .news-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+}
